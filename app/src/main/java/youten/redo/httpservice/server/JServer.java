@@ -3,6 +3,7 @@ package youten.redo.httpservice.server;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.os.Environment;
+import android.util.Log;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
@@ -17,11 +18,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import youten.redo.httpservice.HttpEventListener;
+
 /**
  * Jetty Server
  */
 public class JServer {
-    private static final String TAG = "JServer";
+    private static final String TAG = JServer.class.getSimpleName();
     private static final String ASSETS_DIR = "jetty";
     private int mPort;
     private Server mServer;
@@ -38,7 +41,7 @@ public class JServer {
     /**
      * Serverを開始する。
      */
-    public synchronized void start(Context applicationContext) {
+    public synchronized void start(Context applicationContext, HttpEventListener listener) {
         if ((mServer != null) && (mServer.isStarted())) {
             return;
         }
@@ -46,7 +49,7 @@ public class JServer {
             // setup Servlet Handler
             ServletContextHandler servletHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
             // DataStore Servletを "/ds"に割り当て
-            servletHandler.addServlet(new ServletHolder(new DataStoreServlet()), "/ds");
+            servletHandler.addServlet(new ServletHolder(new DataStoreServlet(listener)), "/ds");
 
             // setup Resource Handler
             // assets配下を展開
@@ -74,6 +77,7 @@ public class JServer {
 
     // 参考：http://d.hatena.ne.jp/corrupt/20110203/1296695472
     private static void extractAssets(final AssetManager am, final String assetsDir) {
+        Log.d(TAG, "extractAssets to:" + assetsDir);
         // 配下のファイルリストを取得
         String[] files = null;
         try {
@@ -84,6 +88,7 @@ public class JServer {
             e.printStackTrace();
         }
         if ((files == null) || (files.length == 0)) {
+            Log.d(TAG, "No file or listing failed assets files.");
             return;
         }
 
@@ -99,6 +104,7 @@ public class JServer {
         }
 
         for (String file : files) {
+            Log.d(TAG, " extract:" + file);
             InputStream in = null;
             BufferedOutputStream out = null;
             try {

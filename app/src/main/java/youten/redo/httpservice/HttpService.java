@@ -14,14 +14,16 @@ import youten.redo.httpservice.server.JServer;
  * AIDL Client -[HttpService]- Browser間でのデータ送信・同期を行う。
  * オンメモリKVS（ただのメンバ変数、ValueはJSON Stringのみを想定）を生成し、GETで取得、POSTで更新する。
  */
-public class HttpService extends Service {
+public class HttpService extends Service implements HttpEventListener {
     public static final String TAG = HttpService.class.getSimpleName();
 
     private static final String PREFIX_ACTION = HttpService.class.getPackage().getName() + ".action";
     private static final String ACTION_START = PREFIX_ACTION + ".START";
     private static final String ACTION_STOP = PREFIX_ACTION + ".STOP";
 
-    /** callback list */
+    /**
+     * callback list
+     */
     private RemoteCallbackList<HttpServiceListener> callbackList = new RemoteCallbackList<>();
 
     private JServer mJServer;
@@ -59,7 +61,7 @@ public class HttpService extends Service {
     public void onCreate() {
         super.onCreate();
         mJServer = new JServer(port);
-        mJServer.start(getApplicationContext());
+        mJServer.start(getApplicationContext(), this);
     }
 
     @Override
@@ -102,6 +104,11 @@ public class HttpService extends Service {
         } else {
             Log.d(TAG, "Unknown Action");
         }
+    }
+
+    @Override
+    public void onEvent(HEvent event) {
+        new CallbackThread(event).start();
     }
 
     /**

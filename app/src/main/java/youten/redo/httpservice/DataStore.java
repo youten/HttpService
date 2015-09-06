@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.TimeZone;
 
 public class DataStore {
+    public static final String KEY_DEFAULT = "default";
     private static DataStore mDataStore = new DataStore();
 
     private Map<String, String> mMap = new HashMap<>();
@@ -57,6 +58,7 @@ public class DataStore {
      * Constructor
      */
     private DataStore() {
+        mMap.put(KEY_DEFAULT, "{\"_dummy\":\"123\"}");
         // singleton
     }
 }

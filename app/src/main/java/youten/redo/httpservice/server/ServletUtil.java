@@ -1,11 +1,10 @@
 package youten.redo.httpservice.server;
 
-import org.apache.http.protocol.HTTP;
-
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
 
+import youten.redo.httpservice.http.Charset;
 import youten.redo.httpservice.http.ContentType;
 
 public class ServletUtil {
@@ -20,7 +19,7 @@ public class ServletUtil {
      * @throws IOException
      */
     public static void responseHtml(HttpServletResponse resp, String title, String message) throws IOException {
-        resp.setCharacterEncoding(HTTP.UTF_8);
+        resp.setCharacterEncoding(Charset.UTF_8);
         resp.setContentType(ContentType.TEXT_HTML);
         StringBuilder sb = new StringBuilder();
         sb.append("<html>").append(LS);
@@ -44,7 +43,7 @@ public class ServletUtil {
             throw new IllegalArgumentException();
         }
 
-        resp.setCharacterEncoding(HTTP.UTF_8);
+        resp.setCharacterEncoding(Charset.UTF_8);
         resp.setContentType(ContentType.APPLICATION_JSON);
 
         resp.getWriter().println(json);

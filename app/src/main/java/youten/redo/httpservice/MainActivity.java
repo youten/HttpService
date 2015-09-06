@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import youten.redo.httpservice.event.HEvent;
 
@@ -15,6 +17,14 @@ public class MainActivity extends HBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        findViewById(R.id.get_datastore).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TextView textview = (TextView) findViewById(R.id.ds_string);
+                textview.setText(getDataStoreValue(DataStore.KEY_DEFAULT));
+            }
+        });
     }
 
     @Override

@@ -49,7 +49,9 @@ public abstract class HBaseActivity extends AppCompatActivity {
     /** bind and register to BService */
     private void registerBServiceListener() {
         if (mHttpServiceIF == null) {
-            bindService(new Intent(HttpServiceIF.class.getName()), mBServiceConnection,
+            Intent intent = new Intent(HttpServiceIF.class.getName());
+            intent.setPackage(HttpServiceIF.class.getPackage().getName());
+            bindService(intent, mBServiceConnection,
                     Context.BIND_AUTO_CREATE);
         } else {
             try {
